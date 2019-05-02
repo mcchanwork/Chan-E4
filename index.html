@@ -144,9 +144,11 @@
         {
             // model ....
             let model = {};
+            
 
             function initializeModel()
             {
+                model.taskcount = 0;
                 sendRequest("whoIsLoggedIn", function()
                 {
                     if (model.error == undefined)
@@ -158,6 +160,11 @@
             function updateView()
             {
                 console.log(model);
+                $("#taskcount").text(model.guesses);
+                if(model.taskcount == 0)
+                {
+                    $("#msg").text("Add your first task!");
+                }
                 if (model.result == undefined)
                 {
                     $("#msg").text(model.error);
@@ -185,7 +192,10 @@
                             item.text(model.result[i].TODO_PRIORITY + ": " + model.result[i].TODO_TASK);
 
                             let btn = $("<button class='deleteBtn btn btn-danger float-right'>Delete</button>");
+                            let btn2 = $("<button class='completeBtn btn btn-primary float-right'>Complete</button>");
                             btn.attr("taskID", model.result[i].TODO_ID);
+                            btn2.attr("taskID", model.result[i].TODO_ID);
+                            item.append(btn2);
                             item.append(btn);
                             
                             $("#tasks").append(item);
@@ -195,6 +205,7 @@
                     {
                         $("#msg").text("Hello " + model.result.email);
                     }
+                    
                 }
             }            
             
@@ -263,6 +274,8 @@
             {
                 $('#taskName').val('');
                 $('#addTaskDlg').modal('show');
+                model.taskcount = model.taskcount + 1;
+                updateView();
             });
 
             $('#confirmAddTaskBtn').click(function() 
